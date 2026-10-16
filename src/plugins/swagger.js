@@ -1,6 +1,5 @@
 import fp from 'fastify-plugin';
 import swagger from '@fastify/swagger';
-import swaggerUi from '@fastify/swagger-ui';
 
 // OpenAPI docs generated from the route schemas: http://localhost:4000/docs
 async function swaggerPlugin(fastify) {
@@ -15,7 +14,14 @@ async function swaggerPlugin(fastify) {
       security: [{ bearerAuth: [] }],
     },
   });
-  await fastify.register(swaggerUi, { routePrefix: '/docs' });
+  // The docs UI is optional: it needs Node 22.12+ (its static-file dependency is ES-module only).
+  // If it can't load, the API still starts – only /docs is missing.
+  try {
+    const { default: swaggerUi } = await import('@fastify/swagger-ui');
+    await fastify.register(swaggerUi, { routePrefix: '/docs' });
+  } catch (err) {
+    fastify.log.warn({ err: err.message }, 'API docs UI (/docs) not available');
+  }
 }
 
 export default fp(swaggerPlugin, { name: 'swagger' });

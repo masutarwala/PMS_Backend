@@ -6,7 +6,7 @@
   "type": "module",
   "main": "src/server.js",
   "engines": {
-    "node": ">=22.12"
+    "node": "24.x"
   },
   "scripts": {
     "predev": "node scripts/check-node.cjs",
