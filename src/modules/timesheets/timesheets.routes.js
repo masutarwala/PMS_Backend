@@ -28,6 +28,10 @@ export default async function timesheetsRoutes(fastify) {
     service.timesheetOptions(db, req.auth),
   );
 
+  fastify.get('/projects', { schema: schemas.filterProjectsSchema, preHandler: authorize(SCREENS.TIMESHEET, 'view') }, (req) =>
+    service.filterProjects(db, req.auth),
+  );
+
   fastify.get('/:id', { schema: schemas.getSchema, preHandler: authorize(SCREENS.TIMESHEET, 'view') }, (req) =>
     service.getTimesheet(db, req.auth, req.params.id),
   );

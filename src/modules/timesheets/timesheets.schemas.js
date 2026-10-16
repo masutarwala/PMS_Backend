@@ -120,6 +120,14 @@ export const optionsSchema = {
   },
 };
 
+export const filterProjectsSchema = {
+  tags,
+  summary: 'Projects for the list filter (all projects for the Super Admin)',
+  response: {
+    200: { type: 'array', items: { type: 'object', properties: { id: { type: 'integer' }, code: { type: 'string' }, title: { type: 'string' } } } },
+  },
+};
+
 export const getSchema = { tags, summary: 'A time entry', params: idParams, response: { 200: entry } };
 
 export const createSchema = {

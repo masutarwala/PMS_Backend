@@ -190,6 +190,19 @@ export async function timesheetOptions(db, auth) {
   }));
 }
 
+/** Projects for the list filter: every project for the Super Admin, otherwise the ones the user is on. */
+export async function filterProjects(db, auth) {
+  const { rows } = auth.isSuperAdmin
+    ? await db.query(`SELECT id, code, title FROM projects ORDER BY title`)
+    : await db.query(
+        `SELECT p.id, p.code, p.title FROM projects p
+          WHERE p.owner_id = $1 OR EXISTS (SELECT 1 FROM project_members pm WHERE pm.project_id = p.id AND pm.user_id = $1)
+          ORDER BY p.title`,
+        [auth.userId],
+      );
+  return rows;
+}
+
 /** Checks project assignment, the task group rule, the task and the daily limit. */
 async function validateEntry(db, auth, userId, body, excludeId = null) {
   const { rows: proj } = await db.query(
