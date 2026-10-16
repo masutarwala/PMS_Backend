@@ -15,6 +15,7 @@ export const SCREENS = Object.freeze({
   PROJECT_STAGES: '/administration/project-stages',
   CUSTOMERS: '/customers',
   PROJECTS: '/projects',
+  TIMESHEET: '/timesheet',
 });
 
 export const ACTIONS = Object.freeze(['view', 'create', 'edit', 'delete', 'approve', 'export']);

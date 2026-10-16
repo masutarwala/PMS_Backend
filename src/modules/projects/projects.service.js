@@ -1,6 +1,7 @@
 import { writeAudit, diff } from '../../utils/audit.js';
 import { badRequest, conflict, isReferenceError, notFound } from '../../utils/errors.js';
 import { escapeLike, idList, WhereBuilder } from '../../utils/query.js';
+import { exact } from '../../utils/number.js';
 import { insertReview, listReviews, loadMemberHours, loadMembers, saveEstimates, saveMembers } from './projects.tabs.js';
 
 export const PROJECT_STATUSES = ['not_started', 'in_progress', 'on_hold', 'completed', 'cancelled'];
@@ -90,7 +91,7 @@ const toDto = (p) => ({
   stageId: p.stage_id,
   stageName: p.stage_name ?? p.stage,
   progress: p.progress,
-  loggedHours: Math.round((p.logged_minutes / 60) * 10) / 10,
+  loggedHours: exact(p.logged_minutes / 60),
   lastComment: p.last_comment ?? null,
   lastCommentBy: p.last_comment_by ?? null,
   lastCommentAt: p.last_comment_at ? new Date(p.last_comment_at).toISOString() : null,
@@ -276,7 +277,7 @@ export async function projectSummary(db, auth) {
   ]);
 
   const r = counts.rows[0];
-  const hrs = (min) => Math.round(min / 6) / 10;
+  const hrs = (min) => exact(min / 60);
   return {
     total: r.total,
     active: r.active,
@@ -346,8 +347,8 @@ export async function getProject(db, auth, id) {
       taskGroupId: e.task_group_id,
       taskGroupName: e.name,
       effortPercentage: e.effort_percentage,
-      hours: est != null ? Math.round(est * e.effort_percentage) / 100 : null,
-      actualHours: Math.round(Number(e.actual_minutes) / 6) / 10,
+      hours: est != null ? exact((est * e.effort_percentage) / 100) : null,
+      actualHours: exact(Number(e.actual_minutes) / 60),
     })),
   };
 }

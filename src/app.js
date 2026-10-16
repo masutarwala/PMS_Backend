@@ -13,6 +13,7 @@ import menusRoutes from './modules/menus/menus.routes.js';
 import projectsRoutes from './modules/projects/projects.routes.js';
 import mastersRoutes from './modules/masters/masters.routes.js';
 import configRoutes from './modules/config/config.routes.js';
+import timesheetsRoutes from './modules/timesheets/timesheets.routes.js';
 
 export async function buildApp(opts = {}) {
   const app = Fastify({
@@ -49,6 +50,7 @@ export async function buildApp(opts = {}) {
       await api.register(projectsRoutes, { prefix: '/projects' });
       await api.register(mastersRoutes, { prefix: '/masters' });
       await api.register(configRoutes, { prefix: '/config' });
+      await api.register(timesheetsRoutes, { prefix: '/timesheets' });
     },
     { prefix: '/api/v1' },
   );

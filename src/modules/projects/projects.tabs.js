@@ -5,10 +5,11 @@
  *   Update   – project_reviews + project_review_task_groups (stage, comment, % completed per group)
  */
 import { badRequest } from '../../utils/errors.js';
+import { exact } from '../../utils/number.js';
 
 export const ACCESS_LEVELS = ['view', 'advanced_view', 'edit'];
 
-const hrs = (minutes) => Math.round(Number(minutes) / 6) / 10;
+const hrs = (minutes) => exact(Number(minutes) / 60);
 const num = (v) => (v === null || v === undefined ? null : Number(v));
 
 /** Members with grade, team position, rate and the hours they logged on the project. */
@@ -58,7 +59,8 @@ export async function loadMemberHours(db, projectId) {
   return rows.map((r) => {
     const hours = hrs(r.minutes);
     const rate = num(r.rate);
-    return { id: r.id, name: r.name, hours, rate, cost: rate != null ? Math.round(hours * rate * 100) / 100 : null };
+    // cost from the exact minutes, not the displayed hours
+    return { id: r.id, name: r.name, hours, rate, cost: rate != null ? exact((Number(r.minutes) / 60) * rate) : null };
   });
 }
 

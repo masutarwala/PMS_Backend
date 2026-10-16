@@ -44,6 +44,10 @@ const MENUS = [
     name: 'Projects', icon: 'folder-kanban', order: 20,
     children: [{ name: 'Project List', url: '/projects', order: 1 }],
   },
+  {
+    name: 'Timesheet', icon: 'clock-3', order: 30,
+    children: [{ name: 'Timesheet', url: '/timesheet', order: 1 }],
+  },
 ];
 
 const ALL = { view: true, create: true, edit: true, delete: true, approve: true, export: true };
@@ -58,6 +62,7 @@ const PERMISSIONS = {
     '/administration/users': ALL,
     '/administration/roles': ALL,
     '/projects': ALL,
+    '/timesheet': ALL,
     ...Object.fromEntries(CONFIG_SCREENS.map((u) => [u, ALL])),
   },
   PROJECT_MANAGER: {
@@ -66,8 +71,10 @@ const PERMISSIONS = {
     '/customers': { view: true, create: true, edit: true, export: true },
     '/administration/project-types': { view: true },
     '/administration/project-stages': { view: true },
+    '/timesheet': { view: true, create: true, edit: true, delete: true, export: true },
   },
-  EMPLOYEE: { '/projects': { view: true } },
+  // everyone logs their own time
+  EMPLOYEE: { '/projects': { view: true }, '/timesheet': { view: true, create: true, edit: true, delete: true } },
   CUSTOMER: { '/projects': { view: true } },
 };
 
